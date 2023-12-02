@@ -1,0 +1,20 @@
+A brief description of what you have and have not accomplished. Describe how far behind you are if you are behind schedule. (5 points)
+
+I am actually quite behind on this project! I spend way too much time trying do a parallax effect while moving but ended up having to drop it to work on everything else. I currently have the basic gameplay loop done but the map is not fully built out and I need to add more enemies as well as a menu screen.
+
+A description of your game’s gameplay loop (5 points)
+
+The player must find a client, get items to be able to defeat the client, and then fight the client to get to bigger clients.
+
+A link to a github repo with your source code (5 points)
+
+https://github.com/TharunKarakkatt/CS4423-Final-UnoDosTres
+
+A video recording of you playing your game, and commentary explaining the mechanics. Please provide at least 2 minutes of gameplay. (5 points)
+
+https://drive.google.com/file/d/1uv-R6fFsPXvXY56YcmhY1oNA6USWFsHE/view?usp=sharing
+
+A zipped build of your game. (5 points)
+
+
+The presence of your gameplay loop in your build / footage (5 points)

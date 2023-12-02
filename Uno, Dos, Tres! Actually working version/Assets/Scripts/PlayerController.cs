@@ -1,18 +1,52 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
 
     public float walkSpeed = 5f;
+    public float jumpSpeed = 8f;
+    public float airWalkSpeed = 3f;
     public int CheeseMeter;
-
+    TouchingDirections touchingDirections;
     Vector2 moveInput;
 
     Rigidbody2D rb;
     Animator animator;
+    Damageable damageable;
+
+    public float CurrentMoveSpeed { get
+        {
+            if(CanMove)
+            {
+                if (IsMoving && !touchingDirections.IsOnWall)
+                {
+                    if (touchingDirections.IsGrounded)
+                    {
+
+                            return walkSpeed;
+                    }
+                    else
+                    {
+                        // Air Move
+                        return airWalkSpeed;
+                    }
+                }
+                else
+                {
+                    // Idle speed is 0
+                    return 0;
+                }
+            } else
+            {
+                // Movement locked
+                return 0;
+            }
+        }
+    }
 
     [SerializeField]
     private bool _isMoving = false;
@@ -55,6 +89,8 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        touchingDirections = GetComponent<TouchingDirections>();
+        damageable = GetComponent<Damageable>();
     }
 
     // Start is called before the first frame update
@@ -66,21 +102,32 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //CheeseMeter = GameObject.Find("cheeseMeterCounter").GetComponent<CheeseController>();
+        if(!IsAlive){
+
+            SceneManager.LoadScene(3);
+        }
     }
 
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2(moveInput.x * walkSpeed, rb.velocity.y);
+        if(!damageable.IsHit)
+            rb.velocity = new Vector2(moveInput.x * walkSpeed, rb.velocity.y);
+        
+        animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
 
-        IsMoving = moveInput != Vector2.zero;
-
-        SetFacingDirection(moveInput);
+        if(IsAlive){
+            IsMoving = moveInput != Vector2.zero;
+            SetFacingDirection(moveInput);
+        }
+        else{
+            IsMoving = false;
+        }
+        
 
     }
 
@@ -101,7 +148,33 @@ public class PlayerController : MonoBehaviour
 
         if(context.started && CheeseMeter >= 1)
         {
-            animator.SetTrigger("attack");
+            animator.SetTrigger(AnimationStrings.OnAttack);
         }
     } 
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if(context.started && touchingDirections.IsGrounded){
+            
+            animator.SetTrigger(AnimationStrings.jump);
+            rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+        }
+    }
+
+    public bool CanMove { get
+        {
+            return animator.GetBool(AnimationStrings.canMove);
+        }
+    }
+
+    public bool IsAlive{
+        get{
+            return animator.GetBool(AnimationStrings.isAlive);
+        }
+    }
+
+    public void OnHit(int damage, Vector2 knockback){
+        
+        rb.velocity = new Vector2(knockback.x, rb.velocity.y + knockback.y);
+    }
 }

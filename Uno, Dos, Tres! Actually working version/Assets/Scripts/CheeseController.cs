@@ -12,14 +12,17 @@ public class CheeseController : MonoBehaviour
     [SerializeField] public AudioSource Eating;
 
     //public TMPro.TextMeshProUGUI textfield;
+    BoxCollider2D coll;
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D coll)
     {
-        cheese.SetActive(false);
-        Eating.Play();
-        cheeseMeterCounter = cheeseMeterCounter + 1;
-        //textfield.text = cheeseMeterCounter.ToString();
-        _player.CheeseMeter = cheeseMeterCounter;  
+        if(coll.gameObject.tag == "Player"){
+            cheese.SetActive(false);
+            Eating.Play();
+            cheeseMeterCounter = cheeseMeterCounter + 1;
+            //textfield.text = cheeseMeterCounter.ToString();
+            _player.CheeseMeter = cheeseMeterCounter;  
+        }
     }
 
 
@@ -33,5 +36,10 @@ public class CheeseController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void Awake(){
+
+        coll = GetComponent<BoxCollider2D>();
     }
 }

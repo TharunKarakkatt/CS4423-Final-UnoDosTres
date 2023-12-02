@@ -12,23 +12,27 @@ public class ChangeSceneToClient : MonoBehaviour
     public Button startMissionButton;
     public GameObject spawnEnemy;
     public AudioSource Notification;
+    BoxCollider2D coll;
 
     //popUpBox.SetActive(false);
     //public Animator animator;
     // public TMPro.TextMeshProUGUI popUpText;
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D coll)
     {
         //print("TRIGGERERE");
         //SceneManager.LoadScene(sceneID);
-        popUpBox.SetActive(true);
-        Notification.Play();
+        if(coll.gameObject.tag == "Player"){
+            popUpBox.SetActive(true);
+            Notification.Play();
+        }
     }
 
-    void OnTriggerExit2D(Collider2D other)
+    void OnTriggerExit2D(Collider2D coll)
     {
         //print("TRIGGERERE");
         //SceneManager.LoadScene(sceneID);
+        
         popUpBox.SetActive(false);
     }
 
@@ -43,6 +47,14 @@ public class ChangeSceneToClient : MonoBehaviour
     {
         spawnEnemy.SetActive(true);
         popUpBox.SetActive(false);
+        Destroy(gameObject);
+    }
+
+    private void Awake(){
+
+        coll = GetComponent<BoxCollider2D>();
+
+
     }
 
     // public void PopUp(string text)
